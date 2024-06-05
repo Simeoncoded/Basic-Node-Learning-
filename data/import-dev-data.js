@@ -1,4 +1,4 @@
-const mongooese = require('mongoose');
+const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const fs = require('fs');
 const Movie = require('./../Models/movieModel');
@@ -16,12 +16,12 @@ mongoose.connect(process.env.CONN_STR, {
 });
 
 //READ MOVIES.JSON file 
-const movies = JSON.parse(readFileSync('./data/movies.json', 'utf-8 '));
+const movies = JSON.parse(fs.readFileSync('./data/movies.json', {encoding:'utf8'}));
 
 //DELETE EXISTING MOVIE DOCUMENTS FROM COLLECTION
 const deleteMovies = async () => {
     try{
-        Movie.deleteMany();
+        await Movie.deleteMany();
         console.log('Data Successfully Deleted');
     }catch(err){
         console.log(err.message);
@@ -36,7 +36,15 @@ const importMovies = async () => {
     }catch(err){
         console.log(err.message);
     }
+    process.exit();
 }
 
-deleteMovies();
-importMovies();
+// deleteMovies();
+// importMovies();
+
+if(process.argv[2] === '--import'){
+    importMovies();
+}
+if(process.argv[2] === '--delete'){
+    deleteMovies();
+}
