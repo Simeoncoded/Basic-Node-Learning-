@@ -25,10 +25,25 @@ exports.getAllMovies = async (req, res) => {
     
     let query = Movie.find();
 
+    //SORTING LOGIC
     if(req.query.sort){
-      query = query.sort(req.query.sort);
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+      //query.sort('releaseYear ratings')
+    }else{
+      query = query.sort('-createdAt');
     }
 
+
+    //TWO PARAMETERS
+    
+    // if(req.query.sort){
+    //   const sortBy = req.query.sort.split(',').join(' ');
+    //   console.log(sortBy);
+    //   query = query.sort(sortBy);
+    //   //query.sort('releaseYear ratings')
+    // }
+    
     const movies = await query;
 
     //find({duration: {$gte: 90}, ratings : {$gte:5}, price: {$lte:100}});
