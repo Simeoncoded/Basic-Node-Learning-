@@ -21,9 +21,15 @@ exports.getAllMovies = async (req, res) => {
     let queryStr = JSON.stringify(req.query);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}` );
     const queryObj = JSON.parse(queryStr);
-    console.log(queryObj);
+    //console.log(queryObj);
     
-    const movies = await Movie.find(queryObj);
+    let query = Movie.find();
+
+    if(req.query.sort){
+      query = query.sort(req.query.sort);
+    }
+
+    const movies = await query;
 
     //find({duration: {$gte: 90}, ratings : {$gte:5}, price: {$lte:100}});
 
