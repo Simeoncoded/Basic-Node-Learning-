@@ -17,33 +17,57 @@ exports.getAllMovies = async (req, res) => {
 
     console.log(req.query);
 
-    //convert to string 
+    //convert to string
     let queryStr = JSON.stringify(req.query);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}` );
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     const queryObj = JSON.parse(queryStr);
     //console.log(queryObj);
-    
+
     let query = Movie.find();
 
     //SORTING LOGIC
-    if(req.query.sort){
-      const sortBy = req.query.sort.split(',').join(' ');
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
       //query.sort('releaseYear ratings')
+    } else {
+      query = query.sort("-createdAt");
+    }
+
+    //LIMITING FIELDS
+    if (req.query.fields) {
+      //query.select('name duration price ratings')
+      const fields = req.query.fields.split(",").join(" ");
+      console.log(fields);
+      query = query.select(fields);
     }else{
-      query = query.sort('-createdAt');
+      query = query.select('-__v');
+    }
+
+    //PAGINATION
+    const page = req.query.page*1 || 1;
+    const limit = req.query.limit*1 || 10;
+    //PAGE 1: 1 - 10; PAGE 2: 11 - 20; PAGE 3: 21 - 30
+    const skip = (page -1) * limit;
+    query = query.skip(skip).limit(limit);
+
+    if(req.query.page){
+      const moviesCount = await Movie.countDocuments();
+      if(skip >= moviesCount){
+        throw new Error("This page is not found!");
+      }
     }
 
 
     //TWO PARAMETERS
-    
+
     // if(req.query.sort){
     //   const sortBy = req.query.sort.split(',').join(' ');
     //   console.log(sortBy);
     //   query = query.sort(sortBy);
     //   //query.sort('releaseYear ratings')
     // }
-    
+
     const movies = await query;
 
     //find({duration: {$gte: 90}, ratings : {$gte:5}, price: {$lte:100}});
