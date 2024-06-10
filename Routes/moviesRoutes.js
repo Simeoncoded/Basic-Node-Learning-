@@ -8,6 +8,9 @@ const router = express.Router();
 //router.param('id', moviesController.checkId);
 
 
+router.route('/highest-rated')
+    .get(moviesController.getHighestRated, moviesController.getAllMovies);
+
 //because they have the same endpoint
 
 router.route('/')
