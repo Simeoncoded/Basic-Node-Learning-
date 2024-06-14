@@ -1,5 +1,5 @@
 const Movie = require("./../Models/movieModel");
-
+const ApiFeatures = require('./../Utils/ApiFeatures');
 
 exports.getHighestRated = (req, res, next) => {
   req.query.limit = '5';
@@ -12,7 +12,8 @@ exports.getHighestRated = (req, res, next) => {
 exports.getAllMovies = async (req, res) => {
   try {
 
-    
+    const features = new ApiFeatures(Movie.find(), req.query.filter().sort());
+
     //console.log(req.query);
 
     // const excludeFields = ['sort', 'page', 'limit', 'fields'];
@@ -50,20 +51,20 @@ exports.getAllMovies = async (req, res) => {
       const fields = req.query.fields.split(",").join(" ");
       console.log(fields);
       query = query.select(fields);
-    }else{
+    } else {
       query = query.select('-__v');
     }
 
     //PAGINATION
-    const page = req.query.page*1 || 1;
-    const limit = req.query.limit*1 || 10;
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
     //PAGE 1: 1 - 10; PAGE 2: 11 - 20; PAGE 3: 21 - 30
-    const skip = (page -1) * limit;
+    const skip = (page - 1) * limit;
     query = query.skip(skip).limit(limit);
 
-    if(req.query.page){
+    if (req.query.page) {
       const moviesCount = await Movie.countDocuments();
-      if(skip >= moviesCount){
+      if (skip >= moviesCount) {
         throw new Error("This page is not found!");
       }
     }
