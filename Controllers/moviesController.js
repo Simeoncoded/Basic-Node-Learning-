@@ -1,3 +1,4 @@
+const { param } = require('../Routes/moviesRoutes');
 const Movie = require("./../Models/movieModel");
 const ApiFeatures = require('./../Utils/ApiFeatures');
 
@@ -5,14 +6,20 @@ exports.getHighestRated = (req, res, next) => {
   req.query.limit = '5';
   req.query.sort = '-ratings';
 
+
   next();
 }
 
 //ROUTE HANDLE FUNCTIONS
 exports.getAllMovies = async (req, res) => {
   try {
-
-    const features = new ApiFeatures(Movie.find(), req.query.filter().sort());
+    const features = new ApiFeatures(Movie.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+      
+    let movies = await features.query;
 
     //console.log(req.query);
 
@@ -29,46 +36,45 @@ exports.getAllMovies = async (req, res) => {
     console.log(req.query);
 
     //convert to string
-    let queryStr = JSON.stringify(req.query);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    const queryObj = JSON.parse(queryStr);
-    //console.log(queryObj);
+    // let queryStr = JSON.stringify(req.query);
+    // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    // const queryObj = JSON.parse(queryStr);
+    // //console.log(queryObj);
 
-    let query = Movie.find();
+    // let query = Movie.find();
 
     //SORTING LOGIC
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
-      query = query.sort(sortBy);
-      //query.sort('releaseYear ratings')
-    } else {
-      query = query.sort("-createdAt");
-    }
+    // if (req.query.sort) {
+    //   const sortBy = req.query.sort.split(",").join(" ");
+    //   query = query.sort(sortBy);
+    //   //query.sort('releaseYear ratings')
+    // } else {
+    //   query = query.sort("-createdAt");
+    // }
 
     //LIMITING FIELDS
-    if (req.query.fields) {
-      //query.select('name duration price ratings')
-      const fields = req.query.fields.split(",").join(" ");
-      console.log(fields);
-      query = query.select(fields);
-    } else {
-      query = query.select('-__v');
-    }
+    // if (req.query.fields) {
+    //   //query.select('name duration price ratings')
+    //   const fields = req.query.fields.split(",").join(" ");
+    //   console.log(fields);
+    //   query = query.select(fields);
+    // } else {
+    //   query = query.select('-__v');
+    // }
 
-    //PAGINATION
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 10;
-    //PAGE 1: 1 - 10; PAGE 2: 11 - 20; PAGE 3: 21 - 30
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
+    // //PAGINATION
+    // const page = req.query.page * 1 || 1;
+    // const limit = req.query.limit * 1 || 10;
+    // //PAGE 1: 1 - 10; PAGE 2: 11 - 20; PAGE 3: 21 - 30
+    // const skip = (page - 1) * limit;
+    // query = query.skip(skip).limit(limit);
 
-    if (req.query.page) {
-      const moviesCount = await Movie.countDocuments();
-      if (skip >= moviesCount) {
-        throw new Error("This page is not found!");
-      }
-    }
-
+    // if (req.query.page) {
+    //   const moviesCount = await Movie.countDocuments();
+    //   if (skip >= moviesCount) {
+    //     throw new Error("This page is not found!");
+    //   }
+    // }
 
     //TWO PARAMETERS
 
@@ -79,7 +85,7 @@ exports.getAllMovies = async (req, res) => {
     //   //query.sort('releaseYear ratings')
     // }
 
-    const movies = await query;
+    //const movies = await query;
 
     //find({duration: {$gte: 90}, ratings : {$gte:5}, price: {$lte:100}});
 
