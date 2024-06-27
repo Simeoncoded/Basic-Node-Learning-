@@ -11,6 +11,8 @@ const router = express.Router();
 router.route('/highest-rated')
     .get(moviesController.getHighestRated, moviesController.getAllMovies);
 
+router.route('/movie-stats').get(moviesController.getMovieStats);
+
 //because they have the same endpoint
 
 router.route('/')
