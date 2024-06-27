@@ -185,3 +185,14 @@ exports.deleteMovie = async (req, res) => {
     });
   }
 };
+
+exports.getMovieStats = async(req, res) => {
+  try{
+
+  }catch(err){
+    res.status(404).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+}
