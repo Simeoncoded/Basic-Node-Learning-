@@ -13,6 +13,8 @@ router.route('/highest-rated')
 
 router.route('/movie-stats').get(moviesController.getMovieStats);
 
+router.route('/movie-by-genre/:genre').get(moviesController.getMovieByGenre);
+
 //because they have the same endpoint
 
 router.route('/')
