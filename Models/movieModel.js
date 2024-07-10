@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const fs = require('fs');
+
+
 
 //schema
 const movieSchema = new mongoose.Schema({
@@ -52,8 +55,10 @@ const movieSchema = new mongoose.Schema({
   price:{
     type:Number,
     required:[true,'Price is a required field']
+  },
+  createdBy:{
+    type:String
   }
-
 },{
     toJSON: {virtuals: true},
     toObject: {virtuals: true}
@@ -64,6 +69,23 @@ const movieSchema = new mongoose.Schema({
 movieSchema.virtual('durationInHours').get(function(){
   return this.duration / 60;
 });
+
+//DOCUMENT MIDDLEWARE
+
+movieSchema.pre('save', function(next) {
+  this.createdBy= 'MANOJHA';
+  next();
+});
+
+movieSchema.post('save', function(doc, next){
+  const content = `A new movie document with name ${doc.name} has been created by ${doc.createdBy}\n`;
+  fs.writeFileSync('./Log/log.txt', content, {flag: 'a'}, (err) => {
+    console.log(err.message);
+  
+  });
+  next();
+});
+
 
 //model
 const Movie = mongoose.model("movie", movieSchema);
