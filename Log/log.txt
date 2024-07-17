@@ -1,3 +1,5 @@
 A new movie document with name Test Adam has been created by MANOJHA
 A new movie document with name Test Adam2 has been created by MANOJHA
 A new movie document with name Test Adam3 has been created by MANOJHA
+A new movie document with name Sample Movie has been created by MANOJHA
+A new movie document with name Sample Movie1 has been created by MANOJHA

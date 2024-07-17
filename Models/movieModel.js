@@ -9,6 +9,8 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: [true, "Name is required field!"],
     unique: true,
+    maxlength: [100, "Movie name must not have more then 100 characters"],
+    minlength: [4, "Movie name must have at least 4 characters"],
     trim:true
   },
   description: {
@@ -23,7 +25,12 @@ const movieSchema = new mongoose.Schema({
   },
   ratings: {
     type: Number,
-    default: 1.0,
+    validate: {
+      validator: function(value){
+        return value >= 1 && value <= 10;
+      },
+      message:"Ratings ({VALUE}) be above 1 and below 10"
+    }
   },
   totalRating:{
     type: Number
@@ -42,7 +49,11 @@ const movieSchema = new mongoose.Schema({
   },
   genres:{
     type:[String],
-    required:[true, 'Genres is required field!']
+    required:[true, 'Genres is required field!'],
+    enum:{
+      values: ["Action", "Adventure", "Sci-Fi", "Thriller","Crime","Drama", "Comedy", "Romance","Biography"],
+      message: "This genre does not exist"
+    }
   },
   coverImage:{
     type:String,
@@ -83,6 +94,32 @@ movieSchema.post('save', function(doc, next){
     console.log(err.message);
   
   });
+  next();
+});
+
+//QUERY MIDDLEWARE
+movieSchema.pre(/^find/, function(next){
+  this.find({releaseDate: {$lte: Date.now()}});
+  next();
+});
+
+movieSchema.post(/^find/, function(docs, next){
+  this.find({releaseDate: {$lte: Date.now()}});
+  this.endTime = Date.now();
+
+  const content = `Query took ${this.endTime - this.startTime} milliseconds to fetch the documents`
+  fs.writeFileSync('./Log/log.txt', content, {flag: 'a'}, (err) => {
+    console.log(err.message);
+  
+  });
+
+  next();
+});
+
+movieSchema.pre('aggregate', function(next){
+  console.log(this.pipeline().unshift({
+    $match: {releaseDate: {$lte: new Date()}}
+  }));
   next();
 });
 
