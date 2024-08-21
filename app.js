@@ -179,8 +179,17 @@ app.use('/api/v1/movies',moviesRouter);//mounting routes
 app.all('*', (req,res, next) => {
     res.status(404).json({
       status: "fail",
-      message: `Can't find ${req.originalUrl} on the server`
+      message: `Can't find ${req.originalUrl} on the server!`
     });
+})
+
+app.use((error,req,res,next) => {
+  error.statusCode = error.statusCode || 500;
+  error.status = error.status || 'error';
+  res.status(error.statusCode).json({
+    status: error.statusCode,
+    message:error.message
+  })
 })
 
 module.exports = app;
