@@ -172,7 +172,15 @@ app.use((req,res,next) => {
 //     .patch(updateMovie)
 //     .delete(deleteMovie)
 
+//USING ROUTES
 app.use('/api/v1/movies',moviesRouter);//mounting routes
 
+//routes will be executed for all types of requests
+app.all('*', (req,res, next) => {
+    res.status(404).json({
+      status: "fail",
+      message: `Can't find ${req.originalUrl} on the server`
+    });
+})
 
 module.exports = app;
