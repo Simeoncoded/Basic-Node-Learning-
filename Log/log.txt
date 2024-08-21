@@ -4,4 +4,4 @@ A new movie document with name Test Adam3 has been created by MANOJHA
 A new movie document with name Sample Movie has been created by MANOJHA
 A new movie document with name Sample Movie1 has been created by MANOJHA
 A new movie document with name Riddick 1 has been created by MANOJHA
-Query took NaN milliseconds to fetch the documentsQuery took NaN milliseconds to fetch the documentsQuery took NaN milliseconds to fetch the documents
+Query took NaN milliseconds to fetch the documentsQuery took NaN milliseconds to fetch the documentsQuery took NaN milliseconds to fetch the documentsA new movie document with name testingmovie has been created by MANOJHA
