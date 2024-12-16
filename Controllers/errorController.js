@@ -20,6 +20,10 @@ const duplicateKeyErrorHandler = (err) => {
     return new CustomError(msg, 400);
 }
 
+const validationErrorHandler = (err) => {
+    Object.values(err.errors).map(val => val.message);
+}
+
 const prodErrors = (res,error) => {
     if(error.isOperational){
     res.status(error.statusCode).json({
@@ -49,6 +53,8 @@ module.exports = (error, req, res, next) => {
     if(error.code === 11000){
         error = duplicateKeyErrorHandler(error);
     }
+    if(error.name == 'ValidationError') error = validationErrorHandler(error);
+
    prodErrors(res, error);
 }
 }
