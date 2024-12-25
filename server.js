@@ -18,15 +18,25 @@ mongoose.connect(process.env.CONN_STR, {
     //console.log(conn);
     console.log("Database Connection Successful");
   })
-  .catch((error) => {
-    console.log("Some error has occured");
-  });
+  // .catch((error) => {
+  //   console.log("Some error has occured");
+  // });
 
 
 
 //CREATE A SERVER
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log("Server has started");
 });
+
+
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  console.log('unhandled rejection occured! Shutting down...');
+
+  server.close(() => {
+    process.exit(1);
+  })
+})
