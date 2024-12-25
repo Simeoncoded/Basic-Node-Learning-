@@ -11,8 +11,7 @@ const app = require("./app");
 //process is the core module of NodeJS
 console.log(process.env);
 
-mongoose
-  .connect(process.env.CONN_STR, {
+mongoose.connect(process.env.CONN_STR, {
     useNewUrlParser: true,
   })
   .then((conn) => {
