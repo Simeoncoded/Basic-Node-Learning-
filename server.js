@@ -4,6 +4,13 @@ dotenv.config({ path: "./config.env" });
 
 const app = require("./app");
 
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  console.log('Uncaught Exception occured! Shutting down...');
+  process.exit(1);
+
+})
+
 //check the environment
 //console.log(app.get('env'));
 
@@ -40,3 +47,8 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   })
 })
+
+
+
+
+console.log(x);
