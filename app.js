@@ -3,6 +3,7 @@ const express = require("express");
 const fs = require("fs");
 const morgan = require('morgan');
 const moviesRouter = require('./Routes/moviesRoutes');
+const userRouter = require('./Routes/authRouter');
 const CustomError = require('./Utils/CustomError');
 const globalErrorHandler = require('./Controllers/errorController');
 let app = express();
@@ -175,7 +176,7 @@ app.use((req,res,next) => {
 
 //USING ROUTES
 app.use('/api/v1/movies',moviesRouter);//mounting routes
-
+app.use('/api/v1/users',authRouter);
 //routes will be executed for all types of requests
 app.all('*', (req,res, next) => {
     // res.status(404).json({
