@@ -3,6 +3,7 @@ const express = require("express");
 const fs = require("fs");
 const morgan = require('morgan');
 const moviesRouter = require('./Routes/moviesRoutes');
+const authRouter = require('./Routes/authRouter');
 const userRouter = require('./Routes/authRouter');
 const CustomError = require('./Utils/CustomError');
 const globalErrorHandler = require('./Controllers/errorController');
